@@ -1,85 +1,47 @@
 #include <LiquidCrystal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
+#define FPS 25.0
+#define MPS ((1.0 / FPS) * 1000.0)
+#define BAUD_RATE 9600
+#define PIN_JOYSTICK_X 1
+#define PIN_JOYSTICK_Y 0
+#define PIN_JOYSTICK_BUTTON 4
+#define TRUE 1
+#define FALSE 0
+#define CONTRAST 15
 
-const int pinX = A0;
-const int pinY = A1;
-const int pinBouton = 1;
-
-
+int js_y;
+int js_x;
+int js_button;
 
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
-int contrast=15;
+void setup()
+{
+    pinMode(PIN_JOYSTICK_BUTTON, INPUT);
+    digitalWrite(PIN_JOYSTICK_BUTTON, HIGH);
+    analogWrite(6, CONTRAST);
+    lcd.begin(16, 2);
+    Serial.begin(BAUD_RATE);
 
-int number = 0;
-
-String Direction = "None";
-
-int X;
-int Y;
-
-
-void setup () {
-  analogWrite(6, contrast);
-  lcd.begin(16, 2);
-  Serial.begin(9600);
-
+    js_button = FALSE;
+    js_y = 0;
+    js_x = 0;
 }
 
-void loop () {
-  lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print(Direction);
-  Direction = "None";
-  
-
-  X = analogRead(pinX);
-  Serial.println(X);
-
-  Y = analogRead(pinY);
-  Serial.println(Y);
-
-  if (X > 960) { ///DOWN
-    Direction = "DOWN";
-      while (X > 850) {
-        X = analogRead(pinX);
-        Serial.println("waiting");
-        lcd.clear();
-        lcd.setCursor(0,0);
-        lcd.print(Direction);
-      }
-    }
-  if (X < 60) { ///UP
-    Direction = "UP";
-      while (X < 150) {
-        X = analogRead(pinX);
-        Serial.println("waiting");
-        lcd.clear();
-        lcd.setCursor(0,0);
-        lcd.print(Direction);
-      }
-    }
-
-    if (Y < 60) { ///RIGHT
-    Direction = "RIGHT";
-      while (Y < 150) {
-        Y = analogRead(pinY);
-        Serial.println("waiting");
-        lcd.clear();
-        lcd.setCursor(0,0);
-        lcd.print(Direction);
-      }
-    }
-
-    if (Y > 960) { ///LEFT
-    Direction = "LEFT";
-      while (Y > 850) {
-        Y = analogRead(pinY);
-        Serial.println("waiting");
-        lcd.clear();
-        lcd.setCursor(0,0);
-        lcd.print(Direction);
-      }
-    }
-  
+void loop()
+{
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("MDMA <3");
+    js_x = analogRead(PIN_JOYSTICK_X);
+    js_y = analogRead(PIN_JOYSTICK_Y);
+    js_button = digitalRead(PIN_JOYSTICK_BUTTON);
+    // Serial.println(js_x);
+    // Serial.println(js_y);
+    // Serial.println(js_button);
+    delay(MPS);
 }
